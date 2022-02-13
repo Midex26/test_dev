@@ -1,4 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
+*{
+    font-family: 'Manrope';
+}
 body {
-    background-color: lightgray;
+    background-color: #141217;
+    table{
+        th{
+            color : #FF6431
+        }
+
+        td{
+            color: #fff;
+        }
+
+        tr{
+            &:hover{
+                background-color: #41444D  ;
+            }
+        }
+    }
+
+    header{
+        .logo{
+            object-fit: contain;
+        }
+        h1{
+            color: white;
+        }
+        
+        .search{
+            background-color: #272933;
+            border: none;
+            border-radius: 45px;
+            color : #fff;
+            padding-left : 20px;
+            height: 50px;
+        }
+    }
 
 }
