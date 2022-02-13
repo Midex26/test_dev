@@ -19,6 +19,15 @@ class TypesRepository extends ServiceEntityRepository
         parent::__construct($registry, Types::class);
     }
 
+    public function getFamilly(){
+        return $this->createQueryBuilder('t')
+            ->select("t.famille")
+            ->orderBy('t.id', 'ASC')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Types[] Returns an array of Types objects
     //  */

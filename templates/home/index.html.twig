@@ -4,34 +4,34 @@
 
 {% block body %}
     <header class="row justify-content-between align-items-center g-0">
-        <div class="col-3 row align-items-center g-0">
-            <img src="{{ asset('build/logo.png') }}" alt="logo" class="logo col-3" />
-            <h1 class="col-9">Matthis Reyjon</h1>
+        <div class="col-3 row align-items-center justify-content-between g-0">
+            <img src="{{ asset('build/logo.png') }}" alt="logo" class="logo col-1"/>
+            <h1 class="col-10">Matthis Reyjon</h1>
         </div>
 
-        <input type="search" placeholder="Rechercher un produit" class="search  col-7">
+        <input type="search" placeholder="Rechercher un produit" class="search  col-7"/>
+        <button class="sync col-1">
+            Synchroniser
+        </button>
     </header>
     <div class="container mt-5">
 
 
-
         <div class="row justify-content-around mt-3 g-0">
             <div class="col-4">
-                <select class="form-select">
-                    <option value="option1">option1</option>
-                    <option value="option2">option2</option>
-                    <option value="option3">option3</option>
-                    <option value="option4">option4</option>
-                    <option value="option5">option5</option>
+                <select class="form-select" id="familly">
+                    <option value="famille" disabled selected>Selectionnez une famille</option>
+                    {% for famille in familles %}
+                        <option value="{{ famille.famille }}">{{ famille.famille }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="col-4">
-                <select class="form-select">
-                    <option value="option1">option1</option>
-                    <option value="option2">option2</option>
-                    <option value="option3">option3</option>
-                    <option value="option4">option4</option>
-                    <option value="option5">option5</option>
+                <select class="form-select" id="brand">
+                    <option value="marque" disabled selected>Selectionnez une marque</option>
+                    {% for marque in marques %}
+                        <option value="{{ marque.marque }}">{{ marque.marque }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
@@ -49,32 +49,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-            </tr>
+            {% for materiel in materiels %}
+                <tr>
+                    <th scope="row">{{ materiel.id }}</th>
+                    <td>{{ materiel.nomCourt }}</td>
+                    <td>{{ materiel.marque }}</td>
+                    <td>{{ materiel.prixPublic }}</td>
+                    <td>{{ materiel.referenceFabricant }}</td>
+                    <td>{{ materiel.typeId.famille }}</td>
+                    <td>{{ materiel.typeId.metierId.nom }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>

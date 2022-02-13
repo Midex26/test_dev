@@ -32,7 +32,7 @@ Encore
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
-    // will require an extra script tag for runtime.js
+    // will require an extra scripts tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
 
@@ -68,7 +68,7 @@ Encore
     // uncomment if you use React
     //.enableReactPreset()
 
-    // uncomment to get integrity="..." attributes on your script & link tags
+    // uncomment to get integrity="..." attributes on your scripts & link tags
     // requires WebpackEncoreBundle 1.4 or higher
     //.enableIntegrityHashes(Encore.isProduction())
 

@@ -19,6 +19,24 @@ class MaterielsRepository extends ServiceEntityRepository
         parent::__construct($registry, Materiels::class);
     }
 
+    public function getAllMaterials($limit = 25, $start = 0){
+        return $this->createQueryBuilder('m')
+            ->orderBy('m.id', 'ASC')
+            ->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function getBrand(){
+        return $this->createQueryBuilder('m')
+            ->select('m.marque')
+            ->orderBy('m.id', 'ASC')
+            ->distinct()
+            ->getQuery()
+            ->getResult() ;
+    }
     // /**
     //  * @return Materiels[] Returns an array of Materiels objects
     //  */

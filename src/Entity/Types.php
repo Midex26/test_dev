@@ -14,7 +14,7 @@ class Types
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -40,7 +40,7 @@ class Types
     private $nom;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Metiers::class)
+     * @ORM\ManyToOne(targetEntity=Metiers::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $metier_id;
@@ -106,6 +106,18 @@ class Types
     public function setMetierId(?Metiers $metier_id): self
     {
         $this->metier_id = $metier_id;
+
+        return $this;
+    }
+
+    /**
+     * Set id
+     * @param integer $id
+     * @return Types
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
 
         return $this;
     }

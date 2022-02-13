@@ -14,7 +14,7 @@ class Fabricants
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -124,6 +124,18 @@ class Fabricants
     public function removeMetierFabricant(Metiers $metierFabricant): self
     {
         $this->metier_fabricants->removeElement($metierFabricant);
+
+        return $this;
+    }
+
+    /**
+     * Set id
+     * @param integer $id
+     * @return Fabricants
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
         return $this;
     }

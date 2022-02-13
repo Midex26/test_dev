@@ -12,7 +12,7 @@ class Materiels
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -33,7 +33,7 @@ class Materiels
     private $fin_commercialisation;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $prix_public;
 
@@ -43,12 +43,13 @@ class Materiels
     private $nom_court;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text", length=65535, nullable=true)
+     *
      */
     private $commentaire;
 
@@ -58,18 +59,18 @@ class Materiels
     private $marque;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $is_administrable;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Types::class)
+     * @ORM\ManyToOne(targetEntity=Types::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $type_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Fabricants::class, inversedBy="materiels")
+     * @ORM\ManyToOne(targetEntity=Fabricants::class, inversedBy="materiels", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $fabricant_id;
@@ -210,4 +211,16 @@ class Materiels
 
         return $this;
     }
+    /**
+     * Set id
+     * @param integer $id
+     * @return Materiels
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
 }

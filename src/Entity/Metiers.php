@@ -14,7 +14,7 @@ class Metiers
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -91,4 +91,15 @@ class Metiers
         return $this;
     }
 
+    /**
+     * Set id
+     * @param integer $id
+     * @return Metiers
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }
