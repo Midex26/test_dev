@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Materiels;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -36,6 +37,20 @@ class MaterielsRepository extends ServiceEntityRepository
             ->distinct()
             ->getQuery()
             ->getResult() ;
+    }
+
+    public function search($value){
+        return $this->createQueryBuilder('m')
+            ->where('m.nom like :value')
+            ->orWhere('m.nom_court like :value')
+            ->orWhere('m.commentaire like :value')
+            ->orWhere('m.reference_fabricant like :value')
+
+            ->orderBy('m.id', 'ASC')
+            ->setParameter('value','%'.$value.'%')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY)
+            ;
     }
     // /**
     //  * @return Materiels[] Returns an array of Materiels objects

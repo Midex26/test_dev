@@ -49,6 +49,7 @@ class HomeController extends AbstractController
 
         //C'est degueu a voir comment je peux le modifier
         ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
         //
 
         $token = $this->getParameter('API_KEY');
@@ -146,14 +147,16 @@ class HomeController extends AbstractController
 
         }
 
-        if($content['next_page_url'] !== null){
+
+        if($content['next_page_url'] !== null && !str_contains($content['next_page_url'], '401')){
             $this->updateBd($client, $doctrine, $content['next_page_url']);
         }
 
         return new JsonResponse($content['data']);
     }
+
     /**
-     * @Route("/filter/", name="update")
+     * @Route("/filter/", name="filter")
      */
     public function filter(ManagerRegistry $doctrine){
         $request = Request::createFromGlobals();
@@ -169,7 +172,9 @@ class HomeController extends AbstractController
 
         $materiels = $materielsRepository
             ->createQueryBuilder('m')
-            ->join('m.type_id ', 't');
+            ->select('m.id, m.nom_court, m.marque, m.prix_public, m.reference_fabricant, t.famille, me.nom')
+            ->join('m.type_id ', 't')
+            ->join('t.metier_id', 'me');
 
 
         if($famille !== null){
@@ -187,6 +192,18 @@ class HomeController extends AbstractController
 
         return new JsonResponse($materiels);
 
+    }
 
+    /**
+     * @Route("/search/{value}", name="search")
+     */
+    public function search(ManagerRegistry $doctrine, String $value){
+        $entityManager = $doctrine->getManager();
+
+        $materielsRepository = $entityManager->getRepository(Materiels::class);
+
+        $result = $materielsRepository->search($value);
+
+        return new JsonResponse($result);
     }
 }

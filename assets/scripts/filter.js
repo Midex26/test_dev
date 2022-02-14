@@ -1,8 +1,26 @@
 let selectedBrand = null;
 let selectedFamilly= null;
+let initData = document.getElementById("contentTable").innerHTML;
 (function () {
     let selectBrand = document.getElementById("brand");
     let selectFamilly = document.getElementById("familly");
+    let searchInput = document.getElementById('search');
+    let syncButton = document.getElementById('sync');
+
+    syncButton.addEventListener( "click", function (){
+        $('.icon_sync').addClass('fa-spin')
+        fetch(`${base_url}/update/`, {
+            method: 'GET',
+        }).then((data) => {
+            return data.json()
+        }).then(function(data) {
+            $('.icon_sync').removeClass('fa-spin')
+            alert('Base de données mise à jour')
+        }).catch((error) => {
+            $('.icon_sync').removeClass('fa-spin')
+            alert('Une erreur est survenue: ' + error)
+        });
+    })
 
 
     selectBrand.addEventListener( "change", function (){
@@ -15,10 +33,44 @@ let selectedFamilly= null;
         updateTable()
     })
 
+    searchInput.addEventListener("input", function(){
+        search(this.value);
+    })
+
 })();
 
+function search(value){
+    if(value.length >= 3){
+        fetch(`${base_url}/search/${value}`, {
+            method: 'GET',
+        }).then((data) => {
+            return data.json()
+        }).then(function(data) {
+            let table = document.getElementById("contentTable");
+            table.innerHTML = "";
+
+            data.forEach(elem => {
+                $("#contentTable").append(`    
+                <tr>
+                    <th scope="row">${elem.id}</th>
+                    <td>${elem.nom_court}</td>
+                    <td>${elem.marque}</td>
+                    <td>${elem.prix_public}</td>
+                    <td>${elem.reference_fabricant}</td>
+                    <td>${elem.famille}</td>
+                    <td>${elem.nom}</td>
+                </tr>`)
+                console.log(elem)
+            })
+
+        });
+    }else{
+        let table = document.getElementById("contentTable");
+        table.innerHTML = initData;
+    }
+}
+
 function updateTable(){
-    let formdata = new FormData();
     let params = "?";
     if(selectedBrand !== null){
        params += "marque=" + selectedBrand + "&"
@@ -28,11 +80,27 @@ function updateTable(){
         params += "famille=" + selectedFamilly + "&"
     }
 
-    fetch(`http://127.0.0.1:8000/filter${params}`, {
+    fetch(`${base_url}/filter${params}`, {
         method: 'GET',
     }).then((data) => {
         return data.json()
     }).then(function(data) {
-        console.log(data)
+        let table = document.getElementById("contentTable");
+        table.innerHTML = "";
+
+        data.forEach(elem => {
+            $("#contentTable").append(`    
+                <tr>
+                    <th scope="row">${elem.id}</th>
+                    <td>${elem.nom_court}</td>
+                    <td>${elem.marque}</td>
+                    <td>${elem.prix_public}</td>
+                    <td>${elem.reference_fabricant}</td>
+                    <td>${elem.famille}</td>
+                    <td>${elem.nom}</td>
+                </tr>`)
+            console.log(elem)
+        })
+
     });
 }

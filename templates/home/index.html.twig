@@ -9,8 +9,9 @@
             <h1 class="col-10">Matthis Reyjon</h1>
         </div>
 
-        <input type="search" placeholder="Rechercher un produit" class="search  col-7"/>
-        <button class="sync col-1">
+        <input type="search" placeholder="Rechercher un produit" id="search" class="search col-7"/>
+        <button class="sync col-1" id="sync">
+            <i class="fa-solid fa-rotate icon_sync"></i>
             Synchroniser
         </button>
     </header>
@@ -48,7 +49,7 @@
                 <th scope="col">Nom du metier</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="contentTable">
             {% for materiel in materiels %}
                 <tr>
                     <th scope="row">{{ materiel.id }}</th>
