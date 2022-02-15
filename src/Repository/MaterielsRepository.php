@@ -20,10 +20,11 @@ class MaterielsRepository extends ServiceEntityRepository
         parent::__construct($registry, Materiels::class);
     }
 
-    public function getAllMaterials($limit = 25, $start = 0){
+    public function getAllMaterials($start = 0, $limit = 25 ){
+
         return $this->createQueryBuilder('m')
             ->orderBy('m.id', 'ASC')
-            ->setFirstResult($start)
+            ->setFirstResult(($start * $limit) -  $limit)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult()

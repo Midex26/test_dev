@@ -10,6 +10,7 @@ use App\Entity\Types;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,31 +22,36 @@ class HomeController extends AbstractController
 {
 
     /**
-     * @Route("/", name="home")
+     * @Route("/{page}", name="home")
      */
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, string $page = '1'): Response
     {
         $entityManager = $doctrine->getManager();
 
         $materielsRepository = $entityManager->getRepository(Materiels::class);
         $typesRepository = $entityManager->getRepository(Types::class);
 
-        $materiels = $materielsRepository->getAllMaterials();
+
+        $materiels = $materielsRepository->getAllMaterials($page);
+
+
         $brands = $materielsRepository->getBrand();
 
-        $famillies= $typesRepository->getFamilly();
+        $famillies = $typesRepository->getFamilly();
 
         return $this->render('home/index.html.twig', [
             'materiels' => $materiels,
             'marques' => $brands,
-            'familles' => $famillies
+            'familles' => $famillies,
+            'currentPage' => $page,
         ]);
     }
 
     /**
      * @Route("/update/{page}", name="update")
      */
-    public function updateBd(HttpClientInterface $client, ManagerRegistry $doctrine, String $page = null) {
+    public function updateBd(HttpClientInterface $client, ManagerRegistry $doctrine, string $page = null)
+    {
 
         //C'est degueu a voir comment je peux le modifier
         ini_set('max_execution_time', 0);
@@ -54,12 +60,12 @@ class HomeController extends AbstractController
 
         $token = $this->getParameter('API_KEY');
 
-        if($page === null){
+        if ($page === null) {
             $response = $client->request(
                 'GET',
-                'https://preprod.starif.cristalcrm.fr/api/materiels?token='.$token
+                'https://preprod.starif.cristalcrm.fr/api/materiels?token=' . $token
             );
-        }else{
+        } else {
             $response = $client->request(
                 'GET',
                 $page
@@ -71,36 +77,36 @@ class HomeController extends AbstractController
 
         $content = $response->toArray();
 
-        foreach ($content['data'] as $element){
-            if($entityManager->getRepository(Materiels::class)->find($element['materiel_id']) === null){
+        foreach ($content['data'] as $element) {
+            if ($entityManager->getRepository(Materiels::class)->find($element['materiel_id']) === null) {
                 $materiel = new Materiels();
 
                 $materiel->setId($element['materiel_id']);
                 $materiel->setReferenceFabricant($element['reference_fabricant']);
                 $materiel->setDebutCommmercialisation(new \DateTime($element['debut_commercialisation']));
 
-                if($element['fin_commercialisation'] !== null) {
+                if ($element['fin_commercialisation'] !== null) {
                     $materiel->setFinCommercialisation(new \DateTime($element['fin_commercialisation']));
                 }
 
-                if($element['prix_public'] !== null){
+                if ($element['prix_public'] !== null) {
                     $materiel->setPrixPublic($element['prix_public']);
                 }
 
                 $materiel->setNomCourt($element['nom_court']);
 
-                if($element['nom'] !== null){
+                if ($element['nom'] !== null) {
                     $materiel->setNom($element['nom']);
                 }
 
-                if($element['commentaire'] !== null){
+                if ($element['commentaire'] !== null) {
                     $materiel->setCommentaire($element['commentaire']);
                 }
 
                 $materiel->setMarque($element['marque']);
 
                 $type = $entityManager->getRepository(Types::class)->find($element['type']['type_id']);
-                if($type === null){
+                if ($type === null) {
                     $type = new Types();
 
                     $type->setId($element['type']['type_id']);
@@ -112,7 +118,7 @@ class HomeController extends AbstractController
 
                     $metier = $entityManager->getRepository(Metiers::class)->find($element['type']['metier']['metier_id']);
 
-                    if($metier === null){
+                    if ($metier === null) {
                         $metier = new Metiers();
 
                         $metier->setId($element['type']['metier']['metier_id']);
@@ -128,7 +134,7 @@ class HomeController extends AbstractController
 
                 $fabricant = $entityManager->getRepository(Fabricants::class)->find($element['fabricant']['fabricant_id']);
 
-                if($fabricant === null){
+                if ($fabricant === null) {
                     $fabricant = new Fabricants();
 
                     $fabricant->setId($element['fabricant']['fabricant_id']);
@@ -148,7 +154,7 @@ class HomeController extends AbstractController
         }
 
 
-        if($content['next_page_url'] !== null && !str_contains($content['next_page_url'], '401')){
+        if ($content['next_page_url'] !== null && !str_contains($content['next_page_url'], '401')) {
             $this->updateBd($client, $doctrine, $content['next_page_url']);
         }
 
@@ -158,7 +164,8 @@ class HomeController extends AbstractController
     /**
      * @Route("/filter/", name="filter")
      */
-    public function filter(ManagerRegistry $doctrine){
+    public function filter(ManagerRegistry $doctrine)
+    {
         $request = Request::createFromGlobals();
 
         $famille = $request->query->get('famille');
@@ -169,7 +176,6 @@ class HomeController extends AbstractController
         $materielsRepository = $entityManager->getRepository(Materiels::class);
 
 
-
         $materiels = $materielsRepository
             ->createQueryBuilder('m')
             ->select('m.id, m.nom_court, m.marque, m.prix_public, m.reference_fabricant, t.famille, me.nom')
@@ -177,12 +183,12 @@ class HomeController extends AbstractController
             ->join('t.metier_id', 'me');
 
 
-        if($famille !== null){
+        if ($famille !== null) {
             $materiels = $materiels->where('t.famille = :famille')
                 ->setParameter('famille', $famille);
         }
 
-        if($marque !== null){
+        if ($marque !== null) {
             $materiels = $materiels->andWhere('m.marque = :marque')
                 ->setParameter('marque', $marque);
         }
@@ -197,7 +203,8 @@ class HomeController extends AbstractController
     /**
      * @Route("/search/{value}", name="search")
      */
-    public function search(ManagerRegistry $doctrine, String $value){
+    public function search(ManagerRegistry $doctrine, string $value)
+    {
         $entityManager = $doctrine->getManager();
 
         $materielsRepository = $entityManager->getRepository(Materiels::class);

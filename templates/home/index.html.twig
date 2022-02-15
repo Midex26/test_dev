@@ -63,5 +63,21 @@
             {% endfor %}
             </tbody>
         </table>
+
+        <div class="paginations mt-5">
+            {% if(currentPage > 1) %}
+                <a href="{{ app.request.getBaseURL()  }}/{{ currentPage -1 }}"><</a>
+                <a href="{{ app.request.getBaseURL()  }}/{{ currentPage -1 }}">{{ currentPage -1 }}</a>
+            {% endif %}
+            <a class="current">{{ currentPage }}</a>
+
+            <a href="{{ app.request.getBaseURL()  }}/{{ currentPage  + 1 }}">{{ currentPage + 1 }}</a>
+
+            {% if(currentPage == 1) %}
+                <a href="{{ app.request.getBaseURL()  }}/{{ currentPage + 2 }}">{{ currentPage + 2  }}</a>
+            {% endif %}
+
+            <a href="{{ app.request.getBaseURL()  }}/{{ currentPage  + 1 }}">></a>
+        </div>
     </div>
 {% endblock %}
