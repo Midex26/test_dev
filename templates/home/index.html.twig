@@ -21,7 +21,7 @@
         <div class="row justify-content-around mt-3 g-0">
             <div class="col-4">
                 <select class="form-select" id="familly">
-                    <option value="famille" disabled selected>Selectionnez une famille</option>
+                    <option value=""  selected>Selectionnez une famille</option>
                     {% for famille in familles %}
                         <option value="{{ famille.famille }}">{{ famille.famille }}</option>
                     {% endfor %}
@@ -29,7 +29,7 @@
             </div>
             <div class="col-4">
                 <select class="form-select" id="brand">
-                    <option value="marque" disabled selected>Selectionnez une marque</option>
+                    <option value=""  selected>Selectionnez une marque</option>
                     {% for marque in marques %}
                         <option value="{{ marque.marque }}">{{ marque.marque }}</option>
                     {% endfor %}
