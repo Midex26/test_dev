@@ -22,9 +22,36 @@ class HomeController extends AbstractController
 {
 
     /**
-     * @Route("/{page}", name="home")
+     * @Route("/", name="home")
      */
-    public function index(ManagerRegistry $doctrine, string $page = '1'): Response
+    public function index(ManagerRegistry $doctrine): Response
+    {
+        $entityManager = $doctrine->getManager();
+
+        $materielsRepository = $entityManager->getRepository(Materiels::class);
+        $typesRepository = $entityManager->getRepository(Types::class);
+
+
+        $materiels = $materielsRepository->getAllMaterials('1');
+
+
+        $brands = $materielsRepository->getBrand();
+
+        $famillies = $typesRepository->getFamilly();
+
+        return $this->render('home/index.html.twig', [
+            'materiels' => $materiels,
+            'marques' => $brands,
+            'familles' => $famillies,
+            'currentPage' => '1',
+        ]);
+    }
+
+
+    /**
+     * @Route("/page/{page}", name="pagination")
+     */
+    public function pagination(ManagerRegistry $doctrine, string $page = '1'): Response
     {
         $entityManager = $doctrine->getManager();
 
