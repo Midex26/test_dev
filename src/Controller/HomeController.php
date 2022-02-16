@@ -203,26 +203,7 @@ class HomeController extends AbstractController
 
         $materielsRepository = $entityManager->getRepository(Materiels::class);
 
-
-        $materiels = $materielsRepository
-            ->createQueryBuilder('m')
-            ->select('m.id, m.nom_court, m.marque, m.prix_public, m.reference_fabricant, t.famille, me.nom')
-            ->join('m.type_id ', 't')
-            ->join('t.metier_id', 'me');
-
-
-        if ($famille !== null) {
-            $materiels = $materiels->where('t.famille = :famille')
-                ->setParameter('famille', $famille);
-        }
-
-        if ($marque !== null) {
-            $materiels = $materiels->andWhere('m.marque = :marque')
-                ->setParameter('marque', $marque);
-        }
-
-        $materiels = $materiels->getQuery()->getResult(AbstractQuery::HYDRATE_ARRAY);
-
+        $materiels = $materielsRepository->filter($famille, $marque);
 
         return new JsonResponse($materiels);
 

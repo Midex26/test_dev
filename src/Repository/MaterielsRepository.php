@@ -53,6 +53,29 @@ class MaterielsRepository extends ServiceEntityRepository
             ->getResult(AbstractQuery::HYDRATE_ARRAY)
             ;
     }
+
+    public function filter($famille = null, $marque = null){
+        $materiels = $this
+            ->createQueryBuilder('m')
+            ->select('m.id, m.nom_court, m.marque, m.prix_public, m.reference_fabricant, t.famille, me.nom')
+            ->join('m.type_id ', 't')
+            ->join('t.metier_id', 'me');
+
+
+        if ($famille !== null) {
+            $materiels = $materiels->where('t.famille = :famille')
+                ->setParameter('famille', $famille);
+        }
+
+        if ($marque !== null) {
+            $materiels = $materiels->andWhere('m.marque = :marque')
+                ->setParameter('marque', $marque);
+        }
+
+        $materiels = $materiels->getQuery()->getResult(AbstractQuery::HYDRATE_ARRAY);
+
+        return $materiels;
+    }
     // /**
     //  * @return Materiels[] Returns an array of Materiels objects
     //  */
