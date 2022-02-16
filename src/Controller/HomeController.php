@@ -80,7 +80,7 @@ class HomeController extends AbstractController
     public function updateBd(HttpClientInterface $client, ManagerRegistry $doctrine, string $page = null)
     {
 
-        //C'est degueu a voir comment je peux le modifier
+        //C'est pas beau a voir comment je peux le modifier
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '-1');
         //
@@ -171,16 +171,17 @@ class HomeController extends AbstractController
 
                 $materiel->setFabricantId($fabricant);
 
-                // tell Doctrine you want to (eventually) save the Product (no queries yet)
+
                 $entityManager->persist($materiel);
 
-                // actually executes the queries (i.e. the INSERT query)
+
                 $entityManager->flush();
             }
 
         }
 
 
+        //str_contains car bug a la page 401, l'api renvoie une erreur 500 alors que la page est sensé exister
         if ($content['next_page_url'] !== null && !str_contains($content['next_page_url'], '401')) {
             $this->updateBd($client, $doctrine, $content['next_page_url']);
         }
